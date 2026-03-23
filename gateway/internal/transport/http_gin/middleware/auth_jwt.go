@@ -1,0 +1,31 @@
+package middleware
+
+import (
+	jwt "gateway/internal/service/jwt"
+	"strings"
+
+	"github.com/gin-gonic/gin"
+)
+
+func JWTAuthMiddleware(jwtService jwt.JWTService) gin.HandlerFunc {
+	return func(ctx *gin.Context) {
+		authHeader := ctx.GetHeader("Authorization")
+
+		if authHeader == "" {
+			ctx.AbortWithStatusJSON(401, gin.H{"error": "unauthorize"})
+			return
+		}
+
+		tokenStr := strings.TrimPrefix(authHeader, "Bearer ")
+		claim, err := jwtService.Parse(tokenStr)
+		if err != nil {
+			ctx.AbortWithStatusJSON(401, gin.H{"error": "invalid token"})
+			return
+		}
+
+		ctx.Set("user_id", claim.UserID)
+		ctx.Set("role", claim.Role)
+
+		ctx.Next()
+	}
+}
