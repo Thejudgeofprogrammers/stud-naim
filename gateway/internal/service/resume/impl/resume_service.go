@@ -26,17 +26,19 @@ func (s *resumeService) GetResume(ctx context.Context, userID string) (string, e
 	return res.FileURL, nil
 }
 
-func (s *resumeService) UploadResume(ctx context.Context, userID string, fileName string) error {
+func (s *resumeService) UploadResume(ctx context.Context, userID string, fileURL string) error {
 	res, err := s.repo.GetByUserID(ctx, userID)
 	if err != nil {
-		// создаём новое
-		return s.repo.Create(ctx, &domain.Resume{
-			UserID:  userID,
-			FileURL: fileName,
-		})
+		if err == domain.ErrResumeNotFound {
+			return s.repo.Create(ctx, &domain.Resume{
+				UserID:  userID,
+				FileURL: fileURL,
+			})
+		}
+		return err
 	}
 
-	res.FileURL = fileName
+	res.FileURL = fileURL
 	return s.repo.Update(ctx, res)
 }
 

@@ -1,7 +1,11 @@
 package handler
 
 import (
+	"fmt"
 	"gateway/internal/service/resume"
+	"net/http"
+	"os"
+	"path/filepath"
 
 	"github.com/gin-gonic/gin"
 )
@@ -21,11 +25,11 @@ func (h *ResumeHandler) GetResume(c *gin.Context) {
 
 	url, err := h.service.GetResume(c, id)
 	if err != nil {
-		c.JSON(500, gin.H{"error": err.Error()})
+		c.JSON(http.StatusNotFound, gin.H{"error": err.Error()})
 		return
 	}
 
-	c.JSON(200, gin.H{"url": url})
+	c.JSON(http.StatusOK, gin.H{"url": url})
 }
 
 func (h *ResumeHandler) UploadResume(c *gin.Context) {
@@ -33,17 +37,35 @@ func (h *ResumeHandler) UploadResume(c *gin.Context) {
 
 	file, err := c.FormFile("file")
 	if err != nil {
-		c.JSON(400, gin.H{"error": "file required"})
+		c.JSON(http.StatusBadRequest, gin.H{"error": "file required"})
 		return
 	}
 
-	err = h.service.UploadResume(c, id, file.Filename)
+	// создаём папку если нет
+	uploadDir := "./uploads"
+	if err := os.MkdirAll(uploadDir, os.ModePerm); err != nil {
+		c.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
+		return
+	}
+
+	filePath := filepath.Join(uploadDir, fmt.Sprintf("%s_%s", id, file.Filename))
+
+	if err := c.SaveUploadedFile(file, filePath); err != nil {
+		c.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
+		return
+	}
+
+	fileURL := "/uploads/" + filepath.Base(filePath)
+
+	err = h.service.UploadResume(c, id, fileURL)
 	if err != nil {
-		c.JSON(500, gin.H{"error": err.Error()})
+		c.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
 		return
 	}
 
-	c.Status(204)
+	c.JSON(http.StatusOK, gin.H{
+		"url": fileURL,
+	})
 }
 
 func (h *ResumeHandler) DeleteResume(c *gin.Context) {
@@ -51,9 +73,9 @@ func (h *ResumeHandler) DeleteResume(c *gin.Context) {
 
 	err := h.service.DeleteResume(c, id)
 	if err != nil {
-		c.JSON(500, gin.H{"error": err.Error()})
+		c.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
 		return
 	}
 
-	c.Status(204)
+	c.Status(http.StatusNoContent)
 }

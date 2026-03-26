@@ -9,6 +9,7 @@ import (
 	"gateway/internal/service/refresh"
 	"time"
 
+	"github.com/google/uuid"
 	"golang.org/x/crypto/bcrypt"
 )
 
@@ -16,17 +17,33 @@ type authService struct {
 	refreshService refresh.RefreshService
 	jwtService     jwt.JWTService
 	userRepo       repository.UserRepository
+	profileRepo    repository.ProfileRepository
 }
 
 func NewAuthService(
 	refreshService refresh.RefreshService,
 	jwtService jwt.JWTService,
 	userRepo repository.UserRepository,
+	profileRepo repository.ProfileRepository,
 ) auth.AuthService {
 	return &authService{
 		refreshService: refreshService,
 		jwtService:     jwtService,
 		userRepo:       userRepo,
+		profileRepo:    profileRepo,
+	}
+}
+
+func parseRole(role string) (domain.Role, error) {
+	switch role {
+	case string(domain.RoleStudent):
+		return domain.RoleStudent, nil
+	case string(domain.RoleEmployer):
+		return domain.RoleEmployer, nil
+	case string(domain.RoleCurator):
+		return domain.RoleCurator, nil
+	default:
+		return "", domain.ErrInvalidRole
 	}
 }
 
@@ -63,29 +80,58 @@ func (s *authService) Register(ctx context.Context, email, password, role string
 		return domain.ErrUserAlreadyExists
 	}
 
+	userRole, err := parseRole(role)
+	if err != nil {
+		return err
+	}
+
 	hash, err := bcrypt.GenerateFromPassword([]byte(password), bcrypt.DefaultCost)
 	if err != nil {
 		return err
 	}
 
-	var userRole domain.Role
-	switch role {
-	case string(domain.RoleStudent):
-		userRole = domain.RoleStudent
-	case string(domain.RoleEmployer):
-		userRole = domain.RoleEmployer
-	default:
-		return domain.ErrInvalidRole
-	}
-
 	user := &domain.User{
+		ID:        uuid.NewString(),
 		Email:     email,
 		Password:  string(hash),
 		Role:      userRole,
 		CreatedAt: time.Now(),
 	}
 
-	return s.userRepo.Create(ctx, user)
+	if err := s.userRepo.Create(ctx, user); err != nil {
+		return err
+	}
+
+	switch userRole {
+
+	case domain.RoleStudent:
+		err = s.profileRepo.CreateStudent(ctx, &domain.StudentProfile{
+			UserID:   user.ID,
+			FullName: "",
+			Skills:   []string{},
+			About:    "",
+		})
+		if err != nil {
+			return err
+		}
+
+	case domain.RoleEmployer:
+		err = s.profileRepo.CreateEmployer(ctx, &domain.EmployerProfile{
+			UserID:         user.ID,
+			CompanyName:    "",
+			Description:    "",
+			Representative: "",
+			Verified:       false,
+		})
+		if err != nil {
+			return err
+		}
+
+	case domain.RoleCurator:
+		// пока без профиля (добавить)
+	}
+
+	return nil
 }
 
 func (s *authService) Login(ctx context.Context, email, password string) (*jwt.AuthTokens, error) {
