@@ -1,6 +1,7 @@
 package impl
 
 import (
+	"errors"
 	"time"
 
 	JWTService "gateway/internal/service/jwt"
@@ -40,6 +41,9 @@ func (s *jwtService) Parse(tokenStr string) (*JWTService.Claims, error) {
 		return nil, err
 	}
 
-	claims := token.Claims.(*JWTService.Claims)
+	claims, ok := token.Claims.(*JWTService.Claims)
+	if !ok {
+		return nil, errors.New("invalid claims")
+	}
 	return claims, nil
 }
