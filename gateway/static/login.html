@@ -1,0 +1,332 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Войти — Трамплин</title>
+<style>
+
+  @import url('https://fonts.googleapis.com/css2?family=Syne:wght@400;600;700;800&family=Manrope:wght@300;400;500;600&display=swap');
+
+  :root {
+    --bg: #0d0f14;
+    --surface: #161921;
+    --surface2: #1e2230;
+    --border: rgba(255,255,255,0.07);
+    --accent: #ff6b35;
+    --accent2: #ffd166;
+    --text: #eef0f5;
+    --muted: #7c8299;
+    --green: #06d6a0;
+    --red: #ef476f;
+    --blue: #4cc9f0;
+    --radius: 14px;
+    --font-head: 'Syne', sans-serif;
+    --font-body: 'Manrope', sans-serif;
+  }
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  html { scroll-behavior: smooth; }
+  body {
+    background: var(--bg);
+    color: var(--text);
+    font-family: var(--font-body);
+    font-size: 15px;
+    line-height: 1.6;
+    min-height: 100vh;
+  }
+  a { color: inherit; text-decoration: none; }
+  input, select, textarea {
+    background: var(--surface2);
+    border: 1px solid var(--border);
+    border-radius: 10px;
+    color: var(--text);
+    font-family: var(--font-body);
+    font-size: 14px;
+    padding: 11px 16px;
+    width: 100%;
+    outline: none;
+    transition: border .2s;
+  }
+  input:focus, select:focus, textarea:focus {
+    border-color: var(--accent);
+  }
+  input::placeholder, textarea::placeholder { color: var(--muted); }
+  button {
+    cursor: pointer;
+    font-family: var(--font-body);
+    font-size: 14px;
+    border: none;
+    border-radius: 10px;
+    padding: 11px 22px;
+    font-weight: 600;
+    transition: all .2s;
+  }
+  .btn-primary {
+    background: var(--accent);
+    color: #fff;
+  }
+  .btn-primary:hover { background: #ff8555; transform: translateY(-1px); box-shadow: 0 6px 20px rgba(255,107,53,.35); }
+  .btn-ghost {
+    background: transparent;
+    color: var(--text);
+    border: 1px solid var(--border);
+  }
+  .btn-ghost:hover { border-color: var(--accent); color: var(--accent); }
+  .tag {
+    display: inline-flex; align-items: center; gap: 5px;
+    background: var(--surface2);
+    border: 1px solid var(--border);
+    border-radius: 6px;
+    padding: 3px 10px;
+    font-size: 12px;
+    color: var(--muted);
+  }
+  .tag.accent { border-color: var(--accent); color: var(--accent); background: rgba(255,107,53,.08); }
+  .tag.green  { border-color: var(--green);  color: var(--green);  background: rgba(6,214,160,.08); }
+  .tag.blue   { border-color: var(--blue);   color: var(--blue);   background: rgba(76,201,240,.08); }
+  .nav {
+    position: fixed; top: 0; left: 0; right: 0; z-index: 100;
+    display: flex; align-items: center; gap: 12px;
+    padding: 0 28px;
+    height: 60px;
+    background: rgba(13,15,20,.85);
+    backdrop-filter: blur(14px);
+    border-bottom: 1px solid var(--border);
+  }
+  .nav-logo {
+    font-family: var(--font-head);
+    font-weight: 800;
+    font-size: 22px;
+    color: var(--accent);
+    letter-spacing: -0.5px;
+    margin-right: auto;
+  }
+  .nav-logo span { color: var(--text); }
+  .nav a { color: var(--muted); font-size: 14px; padding: 4px 10px; border-radius: 8px; transition: .2s; }
+  .nav a:hover { color: var(--text); background: var(--surface2); }
+  .card {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: var(--radius);
+    padding: 20px;
+    transition: border .2s, transform .2s;
+  }
+  .card:hover { border-color: rgba(255,107,53,.3); transform: translateY(-2px); }
+  select option { background: #1e2230; }
+  .badge {
+    display: inline-block;
+    padding: 2px 9px;
+    border-radius: 20px;
+    font-size: 11px;
+    font-weight: 600;
+  }
+  .badge-green  { background: rgba(6,214,160,.15);  color: var(--green); }
+  .badge-orange { background: rgba(255,107,53,.15);  color: var(--accent); }
+  .badge-blue   { background: rgba(76,201,240,.15);   color: var(--blue); }
+  .badge-red    { background: rgba(239,71,111,.15);   color: var(--red); }
+  label { display: block; font-size: 13px; color: var(--muted); margin-bottom: 6px; font-weight: 500; }
+  .form-group { margin-bottom: 16px; }
+  h1,h2,h3,h4 { font-family: var(--font-head); font-weight: 700; line-height: 1.2; }
+  ::-webkit-scrollbar { width: 6px; height: 6px; }
+  ::-webkit-scrollbar-track { background: var(--bg); }
+  ::-webkit-scrollbar-thumb { background: var(--surface2); border-radius: 3px; }
+
+.page {
+  min-height: 100vh;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 24px;
+  background:
+    radial-gradient(ellipse at 20% 50%, rgba(255,107,53,.07) 0%, transparent 50%),
+    radial-gradient(ellipse at 80% 50%, rgba(76,201,240,.05) 0%, transparent 50%),
+    var(--bg);
+}
+.login-box {
+  width: 100%;
+  max-width: 420px;
+}
+.login-logo {
+  font-family: var(--font-head);
+  font-size: 28px;
+  font-weight: 800;
+  color: var(--accent);
+  margin-bottom: 32px;
+  text-align: center;
+}
+.login-logo span { color: var(--text); }
+.login-card {
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: 20px;
+  padding: 36px;
+}
+.login-card h2 { font-size: 24px; margin-bottom: 6px; }
+.login-card .sub { color: var(--muted); font-size: 14px; margin-bottom: 28px; }
+.tab-switcher {
+  display: flex;
+  background: var(--surface2);
+  border-radius: 10px;
+  padding: 4px;
+  margin-bottom: 24px;
+  gap: 4px;
+}
+.tab-switcher button {
+  flex: 1;
+  padding: 9px;
+  border-radius: 8px;
+  font-size: 13px;
+  background: transparent;
+  color: var(--muted);
+  transition: .2s;
+}
+.tab-switcher button.active {
+  background: var(--accent);
+  color: #fff;
+}
+.social-btn {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 10px;
+  width: 100%;
+  padding: 12px;
+  background: var(--surface2);
+  border: 1px solid var(--border);
+  border-radius: 10px;
+  color: var(--text);
+  font-size: 14px;
+  font-weight: 500;
+  margin-bottom: 8px;
+  transition: .2s;
+}
+.social-btn:hover { border-color: var(--accent); color: var(--accent); }
+.divider { display: flex; align-items: center; gap: 12px; margin: 16px 0; color: var(--muted); font-size: 12px; }
+.divider::before, .divider::after { content:''; flex:1; height:1px; background:var(--border); }
+.forgot { text-align: right; margin-top: -10px; margin-bottom: 16px; }
+.forgot a { font-size: 12px; color: var(--muted); }
+.forgot a:hover { color: var(--accent); }
+.curator-link {
+  text-align: center;
+  margin-top: 16px;
+  font-size: 12px;
+  color: var(--muted);
+}
+.curator-link a { color: var(--muted); text-decoration: underline; text-underline-offset: 3px; }
+.curator-link a:hover { color: var(--accent); }
+.pwd-toggle {
+  position: relative;
+}
+.pwd-toggle input { padding-right: 44px; }
+.pwd-toggle button {
+  position: absolute; right: 10px; top: 50%; transform: translateY(-50%);
+  background: none; color: var(--muted); padding: 4px 8px; font-size: 16px;
+}
+</style>
+</head>
+<body>
+<div class="page">
+  <div class="login-box">
+    <div class="login-logo">Трамплин</div>
+
+    <div class="login-card">
+      <h2>Добро пожаловать</h2>
+      <p class="sub">Войдите, чтобы получить доступ к возможностям</p>
+
+      <div class="tab-switcher">
+        <button class="active" onclick="switchTab('applicant',this)">🎓 Соискатель</button>
+        <button onclick="switchTab('employer',this)">🏢 Работодатель</button>
+      </div>
+
+      <button class="social-btn">
+        <svg width="18" height="18" viewBox="0 0 48 48"><path fill="#4285F4" d="M45.5 24.5c0-1.5-.1-3-.4-4.5H24v8.5h12.1c-.5 2.7-2.1 5-4.4 6.5v5.5h7.1c4.2-3.9 6.7-9.6 6.7-16z"/><path fill="#34A853" d="M24 46c6 0 11-2 14.7-5.5l-7.1-5.5c-2 1.3-4.5 2.1-7.6 2.1-5.8 0-10.8-3.9-12.6-9.2H4.1v5.7C7.8 41.1 15.4 46 24 46z"/><path fill="#FBBC05" d="M11.4 28c-.5-1.3-.7-2.7-.7-4s.3-2.7.7-4v-5.7H4.1A21.9 21.9 0 0 0 2 24c0 3.6.9 7 2.1 10l7.3-5.7-.1-.3z"/><path fill="#EA4335" d="M24 10.8c3.3 0 6.2 1.1 8.5 3.4l6.3-6.3C35 4.1 30 2 24 2 15.4 2 7.8 6.9 4.1 14.3l7.3 5.7c1.7-5.3 6.7-9.2 12.6-9.2z"/></svg>
+        Войти через Google
+      </button>
+
+      <div class="divider">или по email</div>
+
+      <div class="form-group">
+        <label>Email</label>
+        <input type="email" placeholder="your@email.com" id="emailInput">
+      </div>
+      <div class="form-group">
+        <label>Пароль</label>
+        <div class="pwd-toggle">
+          <input type="password" placeholder="••••••••" id="pwdInput">
+          <button onclick="togglePwd()" id="eyeBtn">👁</button>
+        </div>
+      </div>
+      <div class="forgot"><a href="#">Забыли пароль?</a></div>
+
+      <button class="btn-primary" style="width:100%;padding:14px" onclick="doLogin()">
+        Войти →
+      </button>
+
+      <p style="text-align:center;margin-top:16px;font-size:13px;color:var(--muted)">
+        Нет аккаунта? <a href="register.html" style="color:var(--accent)">Зарегистрироваться</a>
+      </p>
+      <div class="curator-link">
+        <a href="#" onclick="curatorMode()">Вход для кураторов платформы</a>
+      </div>
+    </div>
+  </div>
+</div>
+
+<script>
+let tab = 'applicant';
+function switchTab(t, btn) {
+  tab = t;
+  document.querySelectorAll('.tab-switcher button').forEach(b=>b.classList.remove('active'));
+  btn.classList.add('active');
+}
+function doLogin() {
+    const email = document.getElementById('emailInput').value;
+    const password = document.getElementById('pwdInput').value;
+    if (!email || !password) {
+        alert('Заполните все поля');
+        return;
+    }
+
+    fetch('/api/v1/auth/login', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ email, password })
+    })
+    .then(res => {
+        if (!res.ok) throw new Error('Неверный email или пароль');
+        return res.json();
+    })
+    .then(data => {
+        localStorage.setItem('token', data.access_token);
+        localStorage.setItem('refresh_token', data.refresh_token);
+        // после входа определяем роль через /users/me
+        return fetch('/api/v1/users/me', {
+            headers: { 'Authorization': `Bearer ${data.access_token}` }
+        });
+    })
+    .then(res => {
+        if (!res.ok) throw new Error('Не удалось получить профиль');
+        return res.json();
+    })
+    .then(user => {
+        if (user.role === 'employer') {
+            window.location.href = '/employer';
+        } else {
+            window.location.href = '/applicant';
+        }
+    })
+    .catch(err => {
+        alert(err.message);
+    });
+}
+function togglePwd() {
+  const i = document.getElementById('pwdInput');
+  i.type = i.type==='password' ? 'text' : 'password';
+}
+function curatorMode() {
+  const e = prompt('Email куратора:');
+  if(e) window.location = 'curator.html';
+}
+</script>
+</body>
+</html>

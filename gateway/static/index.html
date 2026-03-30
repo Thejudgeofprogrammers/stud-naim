@@ -1,0 +1,596 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Трамплин — Карьерная платформа</title>
+<link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>🚀</text></svg>">
+<style>
+
+  @import url('https://fonts.googleapis.com/css2?family=Syne:wght@400;600;700;800&family=Manrope:wght@300;400;500;600&display=swap');
+
+  :root {
+    --bg: #0d0f14;
+    --surface: #161921;
+    --surface2: #1e2230;
+    --border: rgba(255,255,255,0.07);
+    --accent: #ff6b35;
+    --accent2: #ffd166;
+    --text: #eef0f5;
+    --muted: #7c8299;
+    --green: #06d6a0;
+    --red: #ef476f;
+    --blue: #4cc9f0;
+    --radius: 14px;
+    --font-head: 'Syne', sans-serif;
+    --font-body: 'Manrope', sans-serif;
+  }
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  html { scroll-behavior: smooth; }
+  body {
+    background: var(--bg);
+    color: var(--text);
+    font-family: var(--font-body);
+    font-size: 15px;
+    line-height: 1.6;
+    min-height: 100vh;
+  }
+  a { color: inherit; text-decoration: none; }
+  input, select, textarea {
+    background: var(--surface2);
+    border: 1px solid var(--border);
+    border-radius: 10px;
+    color: var(--text);
+    font-family: var(--font-body);
+    font-size: 14px;
+    padding: 11px 16px;
+    width: 100%;
+    outline: none;
+    transition: border .2s;
+  }
+  input:focus, select:focus, textarea:focus {
+    border-color: var(--accent);
+  }
+  input::placeholder, textarea::placeholder { color: var(--muted); }
+  button {
+    cursor: pointer;
+    font-family: var(--font-body);
+    font-size: 14px;
+    border: none;
+    border-radius: 10px;
+    padding: 11px 22px;
+    font-weight: 600;
+    transition: all .2s;
+  }
+  .btn-primary {
+    background: var(--accent);
+    color: #fff;
+  }
+  .btn-primary:hover { background: #ff8555; transform: translateY(-1px); box-shadow: 0 6px 20px rgba(255,107,53,.35); }
+  .btn-ghost {
+    background: transparent;
+    color: var(--text);
+    border: 1px solid var(--border);
+  }
+  .btn-ghost:hover { border-color: var(--accent); color: var(--accent); }
+  .tag {
+    display: inline-flex; align-items: center; gap: 5px;
+    background: var(--surface2);
+    border: 1px solid var(--border);
+    border-radius: 6px;
+    padding: 3px 10px;
+    font-size: 12px;
+    color: var(--muted);
+  }
+  .tag.accent { border-color: var(--accent); color: var(--accent); background: rgba(255,107,53,.08); }
+  .tag.green  { border-color: var(--green);  color: var(--green);  background: rgba(6,214,160,.08); }
+  .tag.blue   { border-color: var(--blue);   color: var(--blue);   background: rgba(76,201,240,.08); }
+  .nav {
+    position: fixed; top: 0; left: 0; right: 0; z-index: 100;
+    display: flex; align-items: center; gap: 12px;
+    padding: 0 28px;
+    height: 60px;
+    background: rgba(13,15,20,.85);
+    backdrop-filter: blur(14px);
+    border-bottom: 1px solid var(--border);
+  }
+  .nav-logo {
+    font-family: var(--font-head);
+    font-weight: 800;
+    font-size: 22px;
+    color: var(--accent);
+    letter-spacing: -0.5px;
+    margin-right: auto;
+  }
+  .nav-logo span { color: var(--text); }
+  .nav a { color: var(--muted); font-size: 14px; padding: 4px 10px; border-radius: 8px; transition: .2s; }
+  .nav a:hover { color: var(--text); background: var(--surface2); }
+  .card {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: var(--radius);
+    padding: 20px;
+    transition: border .2s, transform .2s;
+  }
+  .card:hover { border-color: rgba(255,107,53,.3); transform: translateY(-2px); }
+  select option { background: #1e2230; }
+  .badge {
+    display: inline-block;
+    padding: 2px 9px;
+    border-radius: 20px;
+    font-size: 11px;
+    font-weight: 600;
+  }
+  .badge-green  { background: rgba(6,214,160,.15);  color: var(--green); }
+  .badge-orange { background: rgba(255,107,53,.15);  color: var(--accent); }
+  .badge-blue   { background: rgba(76,201,240,.15);   color: var(--blue); }
+  .badge-red    { background: rgba(239,71,111,.15);   color: var(--red); }
+  label { display: block; font-size: 13px; color: var(--muted); margin-bottom: 6px; font-weight: 500; }
+  .form-group { margin-bottom: 16px; }
+  h1,h2,h3,h4 { font-family: var(--font-head); font-weight: 700; line-height: 1.2; }
+  ::-webkit-scrollbar { width: 6px; height: 6px; }
+  ::-webkit-scrollbar-track { background: var(--bg); }
+  ::-webkit-scrollbar-thumb { background: var(--surface2); border-radius: 3px; }
+
+
+.hero {
+  padding-top: 60px;
+  min-height: 100vh;
+  display: grid;
+  grid-template-rows: auto 1fr;
+}
+
+.search-bar {
+  padding: 18px 28px;
+  display: flex;
+  gap: 10px;
+  align-items: center;
+  background: var(--surface);
+  border-bottom: 1px solid var(--border);
+  flex-wrap: wrap;
+}
+.search-bar input { max-width: 280px; }
+.search-bar select { max-width: 180px; }
+.view-toggle {
+  display: flex;
+  gap: 4px;
+  margin-left: auto;
+  background: var(--surface2);
+  padding: 4px;
+  border-radius: 10px;
+}
+.view-toggle button {
+  padding: 7px 14px;
+  border-radius: 7px;
+  font-size: 13px;
+  background: transparent;
+  color: var(--muted);
+}
+.view-toggle button.active {
+  background: var(--accent);
+  color: #fff;
+}
+
+.main-content {
+  display: grid;
+  grid-template-columns: 380px 1fr;
+  height: calc(100vh - 60px - 62px);
+}
+
+/* LIST PANEL */
+.list-panel {
+  overflow-y: auto;
+  border-right: 1px solid var(--border);
+  padding: 16px;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+.opp-card {
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  padding: 16px;
+  cursor: pointer;
+  transition: all .2s;
+  position: relative;
+  overflow: hidden;
+}
+.opp-card::before {
+  content: '';
+  position: absolute;
+  left: 0; top: 0; bottom: 0;
+  width: 3px;
+  background: var(--accent);
+  opacity: 0;
+  transition: opacity .2s;
+}
+.opp-card:hover { border-color: rgba(255,107,53,.3); background: var(--surface2); }
+.opp-card:hover::before { opacity: 1; }
+.opp-card.fav::before { opacity: 1; background: var(--accent2); }
+.opp-title { font-family: var(--font-head); font-size: 15px; font-weight: 700; margin-bottom: 4px; }
+.opp-company { font-size: 13px; color: var(--muted); margin-bottom: 10px; }
+.opp-footer { display: flex; align-items: center; gap: 6px; flex-wrap: wrap; margin-top: 10px; }
+.opp-salary { font-size: 13px; color: var(--accent2); font-weight: 600; margin-left: auto; }
+.fav-btn {
+  position: absolute; top: 14px; right: 14px;
+  background: var(--surface2); border: 1px solid var(--border);
+  border-radius: 7px; padding: 4px 8px; font-size: 14px;
+  color: var(--muted); transition: .2s;
+}
+.fav-btn:hover { color: var(--accent2); border-color: var(--accent2); }
+.fav-btn.active { color: var(--accent2); border-color: var(--accent2); background: rgba(255,209,102,.1); }
+
+/* MAP PANEL */
+.map-panel {
+  position: relative;
+  background: #111520;
+  overflow: hidden;
+}
+.map-mock {
+  width: 100%; height: 100%;
+  background:
+    radial-gradient(circle at 30% 40%, rgba(255,107,53,.06) 0%, transparent 50%),
+    radial-gradient(circle at 70% 60%, rgba(76,201,240,.06) 0%, transparent 50%),
+    repeating-linear-gradient(0deg, transparent, transparent 40px, rgba(255,255,255,.015) 40px, rgba(255,255,255,.015) 41px),
+    repeating-linear-gradient(90deg, transparent, transparent 40px, rgba(255,255,255,.015) 40px, rgba(255,255,255,.015) 41px);
+  position: relative;
+}
+.map-label {
+  position: absolute; top: 50%; left: 50%;
+  transform: translate(-50%,-50%);
+  text-align: center;
+  color: var(--muted);
+  font-size: 14px;
+}
+.map-label p { margin-top: 8px; font-size: 13px; }
+.map-marker {
+  position: absolute;
+  width: 36px; height: 36px;
+  border-radius: 50% 50% 50% 0;
+  transform: rotate(-45deg);
+  display: flex; align-items: center; justify-content: center;
+  cursor: pointer;
+  transition: transform .2s;
+  box-shadow: 0 4px 14px rgba(0,0,0,.4);
+}
+.map-marker span { transform: rotate(45deg); font-size: 16px; display: block; }
+.map-marker:hover { transform: rotate(-45deg) scale(1.15); }
+.map-marker.type-vac  { background: var(--accent); }
+.map-marker.type-int  { background: var(--blue); }
+.map-marker.type-ment { background: var(--green); }
+.map-marker.type-ev   { background: var(--accent2); }
+.map-marker.fav-marker { box-shadow: 0 0 0 3px var(--accent2), 0 4px 14px rgba(0,0,0,.4); }
+
+/* TOOLTIP */
+.map-tooltip {
+  position: absolute;
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: 12px;
+  padding: 14px;
+  width: 220px;
+  pointer-events: none;
+  box-shadow: 0 10px 30px rgba(0,0,0,.5);
+  z-index: 10;
+  animation: fadeIn .15s ease;
+}
+@keyframes fadeIn { from { opacity:0; transform: translateY(4px); } to { opacity:1; transform: none; } }
+.tooltip-title { font-family: var(--font-head); font-size: 14px; font-weight: 700; margin-bottom: 3px; }
+.tooltip-company { font-size: 12px; color: var(--muted); margin-bottom: 8px; }
+.tooltip-salary { font-size: 13px; color: var(--accent2); font-weight: 600; }
+
+/* Legend */
+.map-legend {
+  position: absolute; bottom: 16px; right: 16px;
+  background: rgba(22,25,33,.9);
+  backdrop-filter: blur(8px);
+  border: 1px solid var(--border);
+  border-radius: 12px;
+  padding: 12px 16px;
+  display: flex;
+  flex-direction: column;
+  gap: 7px;
+  font-size: 12px;
+}
+.legend-item { display: flex; align-items: center; gap: 8px; color: var(--muted); }
+.legend-dot { width: 10px; height: 10px; border-radius: 50%; flex-shrink: 0; }
+
+/* Stats bar */
+.stats-bar {
+  position: absolute; top: 12px; left: 12px;
+  display: flex; gap: 8px;
+}
+.stat-chip {
+  background: rgba(22,25,33,.9);
+  backdrop-filter: blur(8px);
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  padding: 6px 12px;
+  font-size: 12px;
+  display: flex; align-items: center; gap: 6px;
+}
+.stat-chip strong { color: var(--accent); font-family: var(--font-head); font-size: 15px; }
+
+/* LIST VIEW */
+.list-view-full {
+  display: none;
+  padding: 24px 28px;
+  overflow-y: auto;
+  height: 100%;
+}
+.list-view-full.active { display: block; }
+.list-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(300px,1fr));
+  gap: 14px;
+  margin-top: 16px;
+}
+</style>
+</head>
+<body>
+
+<nav class="nav">
+  <div class="nav-logo">Трамп<span>лин</span></div>
+  <a href="index.html">Главная</a>
+  <a href="#companies">Компании</a>
+  <a href="#events">Мероприятия</a>
+  <a href="login.html" class="btn-ghost" style="padding:7px 16px;border-radius:8px;font-size:13px;">Войти</a>
+  <a href="register.html" class="btn-primary" style="padding:7px 16px;border-radius:8px;font-size:13px;">Регистрация</a>
+</nav>
+
+<div class="hero">
+  <div class="search-bar">
+    <input type="text" placeholder="🔍  Поиск вакансий, стажировок, мероприятий..." style="min-width:280px">
+    <select><option>Все технологии</option><option>Python</option><option>JavaScript</option><option>Java</option><option>Go</option><option>SQL</option><option>React</option><option>DevOps</option></select>
+    <select><option>Любой формат</option><option>Офис</option><option>Гибрид</option><option>Удалённо</option></select>
+    <select><option>Все типы</option><option>Вакансия</option><option>Стажировка</option><option>Менторство</option><option>Мероприятие</option></select>
+    <select><option>Уровень зарплаты</option><option>до 60 000 ₽</option><option>60–100 000 ₽</option><option>100–180 000 ₽</option><option>от 180 000 ₽</option></select>
+    <div class="view-toggle">
+      <button class="active" onclick="setView('map', this)">🗺 Карта</button>
+      <button onclick="setView('list', this)">☰ Список</button>
+    </div>
+  </div>
+
+  <div class="main-content" id="mapViewContainer">
+    <!-- LEFT: card list -->
+    <div class="list-panel" id="cardList">
+      <!-- cards injected by JS -->
+    </div>
+
+    <!-- RIGHT: map -->
+    <div class="map-panel" id="mapPanel">
+      <div class="map-mock" id="mapMock">
+        <div class="stats-bar">
+          <div class="stat-chip"><strong>47</strong> вакансий</div>
+          <div class="stat-chip"><strong>12</strong> стажировок</div>
+          <div class="stat-chip"><strong>8</strong> мероприятий</div>
+        </div>
+        <!-- markers will be injected -->
+        <div class="map-label">
+          <div style="font-size:40px">🗺️</div>
+          <p>Интерактивная карта возможностей</p>
+          <p style="margin-top:4px;font-size:11px;">Наведите на маркер для просмотра карточки</p>
+        </div>
+      </div>
+      <div class="map-legend">
+        <div class="legend-item"><div class="legend-dot" style="background:var(--accent)"></div>Вакансия</div>
+        <div class="legend-item"><div class="legend-dot" style="background:var(--blue)"></div>Стажировка</div>
+        <div class="legend-item"><div class="legend-dot" style="background:var(--green)"></div>Менторство</div>
+        <div class="legend-item"><div class="legend-dot" style="background:var(--accent2)"></div>Мероприятие</div>
+        <div class="legend-item"><div class="legend-dot" style="background:var(--accent2);box-shadow:0 0 0 2px var(--accent2),0 0 0 4px rgba(0,0,0,.4)"></div>Избранное</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- LIST FULL VIEW -->
+  <div class="list-view-full" id="listViewFull">
+    <h2 style="font-size:22px;margin-bottom:4px">Все возможности</h2>
+    <p style="color:var(--muted);font-size:13px">67 результатов по вашему запросу</p>
+    <div class="list-grid" id="listGrid"></div>
+  </div>
+</div>
+
+<script>
+const API_BASE = '/api/v1';
+
+// Состояние
+let opportunities = [];
+let favorites = new Set(); // ID избранных
+
+// Загрузка списка возможностей
+async function loadOpportunities() {
+    try {
+        const res = await fetch(`${API_BASE}/opportunities`);
+        const data = await res.json();
+        opportunities = data;
+        renderCards();
+        renderListGrid();
+        renderMarkers();
+        updateStats();
+    } catch (err) {
+        console.error('Ошибка загрузки:', err);
+    }
+}
+
+// Загрузка избранного (если авторизован)
+async function loadFavorites() {
+    const token = localStorage.getItem('token');
+    if (!token) return;
+    try {
+        const res = await fetch(`${API_BASE}/favorites`, {
+            headers: { 'Authorization': `Bearer ${token}` }
+        });
+        if (res.ok) {
+            const favs = await res.json();
+            favorites.clear();
+            favs.forEach(f => favorites.add(f.id));
+            renderCards();
+            renderListGrid();
+            renderMarkers();
+        }
+    } catch (err) {
+        console.error('Ошибка загрузки избранного:', err);
+    }
+}
+
+// Добавление/удаление из избранного
+async function toggleFav(id, btn) {
+    const token = localStorage.getItem('token');
+    if (!token) {
+        alert('Войдите, чтобы добавлять в избранное');
+        return;
+    }
+    const isFav = favorites.has(id);
+    const method = isFav ? 'DELETE' : 'POST';
+    try {
+        const res = await fetch(`${API_BASE}/favorites/${id}`, {
+            method,
+            headers: { 'Authorization': `Bearer ${token}` }
+        });
+        if (res.ok) {
+            if (isFav) favorites.delete(id);
+            else favorites.add(id);
+            btn.classList.toggle('active', !isFav);
+            renderMarkers(); // обновить маркеры (добавить/убрать класс fav-marker)
+        } else {
+            alert('Ошибка при изменении избранного');
+        }
+    } catch (err) {
+        console.error(err);
+    }
+}
+
+// Рендер карточек в левой панели
+function renderCards() {
+    const el = document.getElementById('cardList');
+    el.innerHTML = opportunities.map(d => `
+        <div class="opp-card ${favorites.has(d.id) ? 'fav' : ''}" onclick="window.location='job-detail.html?id=${d.id}'">
+            <button class="fav-btn ${favorites.has(d.id) ? 'active' : ''}" onclick="event.stopPropagation();toggleFav(${d.id},this)">★</button>
+            <div class="opp-title">${d.title}</div>
+            <div class="opp-company">${d.company} · ${d.city}</div>
+            <div style="display:flex;gap:5px;flex-wrap:wrap">
+                ${(d.skills || []).slice(0,3).map(s=>`<span class="tag">${s}</span>`).join('')}
+            </div>
+            <div class="opp-footer">
+                <span class="badge badge-orange">${d.type || 'Вакансия'}</span>
+                <span class="tag">${d.format || 'Офис'}</span>
+                ${d.level ? `<span class="tag">${d.level}</span>` : ''}
+                ${d.salary ? `<span class="opp-salary">${d.salary}</span>` : ''}
+            </div>
+        </div>
+    `).join('');
+}
+
+// Рендер в режиме списка
+function renderListGrid() {
+    const el = document.getElementById('listGrid');
+    el.innerHTML = opportunities.map(d => `
+        <div class="card" style="cursor:pointer" onclick="window.location='job-detail.html?id=${d.id}'">
+            <div style="display:flex;align-items:flex-start;justify-content:space-between;gap:8px">
+                <div class="opp-title" style="font-size:16px">${d.title}</div>
+                <button class="fav-btn ${favorites.has(d.id) ? 'active' : ''}" onclick="event.stopPropagation();toggleFav(${d.id},this)" style="position:static;flex-shrink:0">★</button>
+            </div>
+            <div class="opp-company" style="margin-bottom:10px">${d.company} · ${d.city}</div>
+            <div style="display:flex;gap:5px;flex-wrap:wrap;margin-bottom:12px">
+                ${(d.skills || []).map(s=>`<span class="tag">${s}</span>`).join('')}
+            </div>
+            <div style="display:flex;gap:6px;align-items:center;flex-wrap:wrap">
+                <span class="badge badge-orange">${d.type || 'Вакансия'}</span>
+                <span class="tag">${d.format || 'Офис'}</span>
+                ${d.salary ? `<span style="margin-left:auto;color:var(--accent2);font-weight:600;font-size:13px">${d.salary}</span>` : ''}
+            </div>
+        </div>
+    `).join('');
+}
+
+// Рендер маркеров на карте
+function renderMarkers() {
+    const map = document.getElementById('mapMock');
+    map.querySelectorAll('.map-marker,.map-tooltip').forEach(e => e.remove());
+    opportunities.forEach(d => {
+        const m = document.createElement('div');
+        m.className = `map-marker ${favorites.has(d.id) ? 'fav-marker' : ''}`;
+        m.style.cssText = `left:${d.x || 50}%;top:${d.y || 50}%;`;
+        m.innerHTML = `<span>${d.type === 'vac' ? '💼' : d.type === 'int' ? '📋' : d.type === 'ev' ? '🎯' : '🎓'}</span>`;
+        m.addEventListener('mouseenter', e => showTooltip(d, e.currentTarget));
+        m.addEventListener('mouseleave', () => document.querySelectorAll('.map-tooltip').forEach(t => t.remove()));
+        map.appendChild(m);
+    });
+}
+
+function showTooltip(d, marker) {
+    const tt = document.createElement('div');
+    tt.className = 'map-tooltip';
+    const r = marker.getBoundingClientRect();
+    const mr = document.getElementById('mapMock').getBoundingClientRect();
+    let left = r.left - mr.left + 40;
+    let top  = r.top  - mr.top  - 20;
+    if(left + 230 > mr.width) left -= 260;
+    tt.style.cssText = `left:${left}px;top:${top}px`;
+    tt.innerHTML = `
+        <div class="tooltip-title">${d.title}</div>
+        <div class="tooltip-company">${d.company} · ${d.city}</div>
+        <div style="display:flex;gap:5px;flex-wrap:wrap;margin-bottom:8px">
+            ${(d.skills || []).slice(0,3).map(s=>`<span class="tag">${s}</span>`).join('')}
+        </div>
+        <div style="display:flex;align-items:center;justify-content:space-between">
+            <span class="badge badge-orange">${d.type || 'Вакансия'}</span>
+            ${d.salary ? `<span class="tooltip-salary">${d.salary}</span>` : ''}
+        </div>`;
+    document.getElementById('mapMock').appendChild(tt);
+}
+
+function updateStats() {
+    const vac = opportunities.filter(o => o.type === 'vac').length;
+    const st = opportunities.filter(o => o.type === 'int').length;
+    const ev = opportunities.filter(o => o.type === 'ev').length;
+    document.querySelector('.stat-chip:nth-child(1) strong').innerText = vac;
+    document.querySelector('.stat-chip:nth-child(2) strong').innerText = st;
+    document.querySelector('.stat-chip:nth-child(3) strong').innerText = ev;
+}
+
+function setView(v, btn) {
+    document.querySelectorAll('.view-toggle button').forEach(b => b.classList.remove('active'));
+    btn.classList.add('active');
+    const mapC = document.getElementById('mapViewContainer');
+    const listC = document.getElementById('listViewFull');
+    if(v === 'map') {
+        mapC.style.display = 'grid';
+        listC.classList.remove('active');
+    } else {
+        mapC.style.display = 'none';
+        listC.classList.add('active');
+        renderListGrid();
+    }
+}
+
+// Фильтрация и поиск
+document.querySelector('.search-bar button')?.addEventListener('click', async () => {
+    const query = document.querySelector('.search-bar input[placeholder*="Поиск"]').value;
+    const tech = document.querySelector('.search-bar select:nth-child(2)').value;
+    const format = document.querySelector('.search-bar select:nth-child(3)').value;
+    const type = document.querySelector('.search-bar select:nth-child(4)').value;
+    const salary = document.querySelector('.search-bar select:nth-child(5)').value;
+
+    let url = `${API_BASE}/opportunities/filter?`;
+    if (query) url += `q=${encodeURIComponent(query)}&`;
+    if (tech !== 'Все технологии') url += `tag=${encodeURIComponent(tech)}&`;
+    if (format !== 'Любой формат') url += `format=${encodeURIComponent(format)}&`;
+    if (type !== 'Все типы') url += `type=${encodeURIComponent(type)}&`;
+    // salary – можно передать диапазоном
+
+    const res = await fetch(url);
+    opportunities = await res.json();
+    renderCards();
+    renderListGrid();
+    renderMarkers();
+    updateStats();
+});
+
+// Загрузка данных при старте
+loadOpportunities();
+loadFavorites();
+</script>
+</body>
+</html>

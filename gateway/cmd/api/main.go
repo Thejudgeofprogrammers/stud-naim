@@ -18,7 +18,7 @@ func main() {
 	r := app.NewApp(env)
 
 	srv := &http.Server{
-		Addr: fmt.Sprintf(":%s", env.Port),
+		Addr: fmt.Sprintf("0.0.0.0:%s", env.Port),
 		Handler: r,
 	}
 
