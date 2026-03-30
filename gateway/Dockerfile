@@ -1,4 +1,4 @@
-FROM golang:1.22-alpine AS builder
+FROM golang:1.26-alpine3.23 AS builder
 WORKDIR /app
 
 RUN apk add --no-cache git
@@ -18,6 +18,10 @@ WORKDIR /app
 RUN apk add --no-cache ca-certificates
 
 COPY --from=builder /app/app .
+
+COPY ./static ./static
+COPY .env.dev .
+ENV CONFIG_FILE=.env.dev
 
 RUN mkdir -p /app/uploads
 

@@ -1,0 +1,381 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Регистрация — Трамплин</title>
+<style>
+
+  @import url('https://fonts.googleapis.com/css2?family=Syne:wght@400;600;700;800&family=Manrope:wght@300;400;500;600&display=swap');
+
+  :root {
+    --bg: #0d0f14;
+    --surface: #161921;
+    --surface2: #1e2230;
+    --border: rgba(255,255,255,0.07);
+    --accent: #ff6b35;
+    --accent2: #ffd166;
+    --text: #eef0f5;
+    --muted: #7c8299;
+    --green: #06d6a0;
+    --red: #ef476f;
+    --blue: #4cc9f0;
+    --radius: 14px;
+    --font-head: 'Syne', sans-serif;
+    --font-body: 'Manrope', sans-serif;
+  }
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  html { scroll-behavior: smooth; }
+  body {
+    background: var(--bg);
+    color: var(--text);
+    font-family: var(--font-body);
+    font-size: 15px;
+    line-height: 1.6;
+    min-height: 100vh;
+  }
+  a { color: inherit; text-decoration: none; }
+  input, select, textarea {
+    background: var(--surface2);
+    border: 1px solid var(--border);
+    border-radius: 10px;
+    color: var(--text);
+    font-family: var(--font-body);
+    font-size: 14px;
+    padding: 11px 16px;
+    width: 100%;
+    outline: none;
+    transition: border .2s;
+  }
+  input:focus, select:focus, textarea:focus {
+    border-color: var(--accent);
+  }
+  input::placeholder, textarea::placeholder { color: var(--muted); }
+  button {
+    cursor: pointer;
+    font-family: var(--font-body);
+    font-size: 14px;
+    border: none;
+    border-radius: 10px;
+    padding: 11px 22px;
+    font-weight: 600;
+    transition: all .2s;
+  }
+  .btn-primary {
+    background: var(--accent);
+    color: #fff;
+  }
+  .btn-primary:hover { background: #ff8555; transform: translateY(-1px); box-shadow: 0 6px 20px rgba(255,107,53,.35); }
+  .btn-ghost {
+    background: transparent;
+    color: var(--text);
+    border: 1px solid var(--border);
+  }
+  .btn-ghost:hover { border-color: var(--accent); color: var(--accent); }
+  .tag {
+    display: inline-flex; align-items: center; gap: 5px;
+    background: var(--surface2);
+    border: 1px solid var(--border);
+    border-radius: 6px;
+    padding: 3px 10px;
+    font-size: 12px;
+    color: var(--muted);
+  }
+  .tag.accent { border-color: var(--accent); color: var(--accent); background: rgba(255,107,53,.08); }
+  .tag.green  { border-color: var(--green);  color: var(--green);  background: rgba(6,214,160,.08); }
+  .tag.blue   { border-color: var(--blue);   color: var(--blue);   background: rgba(76,201,240,.08); }
+  .nav {
+    position: fixed; top: 0; left: 0; right: 0; z-index: 100;
+    display: flex; align-items: center; gap: 12px;
+    padding: 0 28px;
+    height: 60px;
+    background: rgba(13,15,20,.85);
+    backdrop-filter: blur(14px);
+    border-bottom: 1px solid var(--border);
+  }
+  .nav-logo {
+    font-family: var(--font-head);
+    font-weight: 800;
+    font-size: 22px;
+    color: var(--accent);
+    letter-spacing: -0.5px;
+    margin-right: auto;
+  }
+  .nav-logo span { color: var(--text); }
+  .nav a { color: var(--muted); font-size: 14px; padding: 4px 10px; border-radius: 8px; transition: .2s; }
+  .nav a:hover { color: var(--text); background: var(--surface2); }
+  .card {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: var(--radius);
+    padding: 20px;
+    transition: border .2s, transform .2s;
+  }
+  .card:hover { border-color: rgba(255,107,53,.3); transform: translateY(-2px); }
+  select option { background: #1e2230; }
+  .badge {
+    display: inline-block;
+    padding: 2px 9px;
+    border-radius: 20px;
+    font-size: 11px;
+    font-weight: 600;
+  }
+  .badge-green  { background: rgba(6,214,160,.15);  color: var(--green); }
+  .badge-orange { background: rgba(255,107,53,.15);  color: var(--accent); }
+  .badge-blue   { background: rgba(76,201,240,.15);   color: var(--blue); }
+  .badge-red    { background: rgba(239,71,111,.15);   color: var(--red); }
+  label { display: block; font-size: 13px; color: var(--muted); margin-bottom: 6px; font-weight: 500; }
+  .form-group { margin-bottom: 16px; }
+  h1,h2,h3,h4 { font-family: var(--font-head); font-weight: 700; line-height: 1.2; }
+  ::-webkit-scrollbar { width: 6px; height: 6px; }
+  ::-webkit-scrollbar-track { background: var(--bg); }
+  ::-webkit-scrollbar-thumb { background: var(--surface2); border-radius: 3px; }
+
+.page {
+  min-height: 100vh;
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+}
+.left-panel {
+  background: linear-gradient(145deg, #0f1219 0%, #161b28 100%);
+  border-right: 1px solid var(--border);
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  padding: 60px;
+  position: relative;
+  overflow: hidden;
+}
+.left-panel::before {
+  content: '';
+  position: absolute;
+  width: 500px; height: 500px;
+  background: radial-gradient(circle, rgba(255,107,53,.12) 0%, transparent 70%);
+  top: -100px; left: -100px;
+  pointer-events: none;
+}
+.left-panel::after {
+  content: '';
+  position: absolute;
+  width: 400px; height: 400px;
+  background: radial-gradient(circle, rgba(76,201,240,.08) 0%, transparent 70%);
+  bottom: -80px; right: -80px;
+  pointer-events: none;
+}
+.brand { font-family: var(--font-head); font-size: 32px; font-weight: 800; color: var(--accent); margin-bottom: 32px; }
+.brand span { color: var(--text); }
+.tagline { font-family: var(--font-head); font-size: 42px; font-weight: 800; line-height: 1.1; margin-bottom: 20px; }
+.tagline em { color: var(--accent); font-style: normal; }
+.sub { color: var(--muted); font-size: 16px; line-height: 1.7; max-width: 380px; margin-bottom: 40px; }
+.feature { display: flex; align-items: center; gap: 12px; margin-bottom: 14px; font-size: 14px; color: var(--muted); }
+.feature-icon { width: 36px; height: 36px; background: var(--surface2); border: 1px solid var(--border); border-radius: 10px; display: flex; align-items: center; justify-content: center; font-size: 18px; flex-shrink: 0; }
+.right-panel {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  padding: 60px;
+  overflow-y: auto;
+}
+.form-box { max-width: 420px; width: 100%; }
+.form-box h2 { font-size: 28px; margin-bottom: 6px; }
+.form-box p { color: var(--muted); font-size: 14px; margin-bottom: 28px; }
+.role-picker { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin-bottom: 24px; }
+.role-card {
+  border: 2px solid var(--border);
+  border-radius: var(--radius);
+  padding: 18px 14px;
+  cursor: pointer;
+  text-align: center;
+  transition: all .2s;
+  background: var(--surface);
+}
+.role-card.selected { border-color: var(--accent); background: rgba(255,107,53,.06); }
+.role-card .role-icon { font-size: 28px; margin-bottom: 8px; }
+.role-card .role-name { font-family: var(--font-head); font-weight: 700; font-size: 15px; }
+.role-card .role-desc { font-size: 12px; color: var(--muted); margin-top: 4px; }
+.divider { display: flex; align-items: center; gap: 12px; margin: 16px 0; color: var(--muted); font-size: 12px; }
+.divider::before, .divider::after { content:''; flex:1; height:1px; background:var(--border); }
+.extra-fields { display: none; animation: fadeIn .25s ease; }
+.extra-fields.show { display: block; }
+@keyframes fadeIn { from { opacity:0; transform:translateY(-6px); } to { opacity:1; transform:none; } }
+.checkbox-row { display: flex; gap: 10px; align-items: flex-start; margin-top: 16px; font-size: 13px; color: var(--muted); }
+.checkbox-row input { width: auto; }
+.step-indicator { display: flex; gap: 6px; margin-bottom: 24px; }
+.step { width: 28px; height: 4px; border-radius: 2px; background: var(--surface2); transition: .3s; }
+.step.active { background: var(--accent); }
+.step.done { background: var(--green); }
+</style>
+</head>
+<body>
+<div class="page">
+  <div class="left-panel">
+    <div class="brand">Трамплин</div>
+    <div class="tagline">Твой старт<br>в <em>IT-карьере</em></div>
+    <p class="sub">Платформа, где студенты находят первую работу, стажировки, менторов и карьерные события.</p>
+    <div class="feature"><div class="feature-icon">🎯</div> Персонализированные рекомендации по навыкам</div>
+    <div class="feature"><div class="feature-icon">🤝</div> Нетворкинг с другими студентами и выпускниками</div>
+    <div class="feature"><div class="feature-icon">🗺️</div> Карта вакансий и мероприятий в вашем городе</div>
+    <div class="feature"><div class="feature-icon">📈</div> Отслеживание откликов и статусов в реальном времени</div>
+  </div>
+
+  <div class="right-panel">
+    <div class="form-box">
+      <div class="step-indicator">
+        <div class="step active" id="s1"></div>
+        <div class="step" id="s2"></div>
+        <div class="step" id="s3"></div>
+      </div>
+      <h2>Создать аккаунт</h2>
+      <p>Уже есть аккаунт? <a href="login.html" style="color:var(--accent)">Войти</a></p>
+
+      <div class="form-group">
+        <label>Роль на платформе</label>
+        <div class="role-picker">
+          <div class="role-card" onclick="selectRole('applicant',this)">
+            <div class="role-icon">🎓</div>
+            <div class="role-name">Соискатель</div>
+            <div class="role-desc">Студент или выпускник</div>
+          </div>
+          <div class="role-card" onclick="selectRole('employer',this)">
+            <div class="role-icon">🏢</div>
+            <div class="role-name">Работодатель</div>
+            <div class="role-desc">Компания или ИП</div>
+          </div>
+        </div>
+      </div>
+
+      <div class="form-group">
+        <label>Отображаемое имя</label>
+        <input type="text" placeholder="Как вас будут видеть другие пользователи">
+      </div>
+      <div class="form-group">
+        <label>Email</label>
+        <input type="email" placeholder="your@email.com">
+      </div>
+      <div class="form-group">
+        <label>Пароль</label>
+        <input type="password" placeholder="Минимум 8 символов">
+      </div>
+      <div class="form-group">
+        <label>Повторите пароль</label>
+        <input type="password" placeholder="Повторите пароль">
+      </div>
+
+      <!-- Applicant extras -->
+      <div class="extra-fields" id="applicantExtra">
+        <div class="divider">Дополнительно для соискателя</div>
+        <div class="form-group">
+          <label>ФИО</label>
+          <input type="text" placeholder="Фамилия Имя Отчество">
+        </div>
+        <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px">
+          <div class="form-group">
+            <label>Вуз</label>
+            <input type="text" placeholder="НИУ ВШЭ, ИТМО...">
+          </div>
+          <div class="form-group">
+            <label>Курс / год выпуска</label>
+            <input type="text" placeholder="3 курс / 2026">
+          </div>
+        </div>
+      </div>
+
+      <!-- Employer extras -->
+      <div class="extra-fields" id="employerExtra">
+        <div class="divider">Верификация компании</div>
+        <div class="form-group">
+          <label>Название компании</label>
+          <input type="text" placeholder="ООО Ромашка">
+        </div>
+        <div class="form-group">
+          <label>ИНН компании</label>
+          <input type="text" placeholder="7700000000">
+        </div>
+        <div class="form-group">
+          <label>Корпоративный email (домен компании)</label>
+          <input type="email" placeholder="hr@company.ru">
+        </div>
+        <div class="form-group">
+          <label>Ссылка на профиль компании (LinkedIn / hh.ru)</label>
+          <input type="url" placeholder="https://...">
+        </div>
+        <div style="background:rgba(255,209,102,.07);border:1px solid rgba(255,209,102,.2);border-radius:10px;padding:12px;font-size:12px;color:var(--muted);margin-bottom:12px">
+          ⏳ После регистрации куратор платформы проверит данные в течение 1–2 рабочих дней и пришлёт подтверждение на email.
+        </div>
+      </div>
+
+      <div class="checkbox-row">
+        <input type="checkbox" id="agree">
+        <label for="agree" style="margin:0">Я согласен с <a href="#" style="color:var(--accent)">Условиями использования</a> и <a href="#" style="color:var(--accent)">Политикой конфиденциальности</a></label>
+      </div>
+
+      <button class="btn-primary" style="width:100%;margin-top:20px;padding:14px" onclick="goToDash()">
+        Зарегистрироваться →
+      </button>
+    </div>
+  </div>
+</div>
+
+<script>
+let role = null;
+function selectRole(r, el) {
+  role = r;
+  document.querySelectorAll('.role-card').forEach(c=>c.classList.remove('selected'));
+  el.classList.add('selected');
+  document.getElementById('applicantExtra').classList.toggle('show', r==='applicant');
+  document.getElementById('employerExtra').classList.toggle('show', r==='employer');
+  document.getElementById('s2').classList.add('active');
+}
+
+async function goToDash() {
+  if (!role) { alert('Выберите роль'); return; }
+  const name = document.querySelector('.form-box input[placeholder*="имя"]').value;
+  const email = document.querySelector('.form-box input[type="email"]').value;
+  const password = document.querySelector('.form-box input[type="password"]').value;
+  const confirm = document.querySelectorAll('.form-box input[type="password"]')[1].value;
+  const agree = document.getElementById('agree').checked;
+
+  if (!name || !email || !password) {
+    alert('Заполните обязательные поля');
+    return;
+  }
+  if (password !== confirm) {
+    alert('Пароли не совпадают');
+    return;
+  }
+  if (!agree) {
+    alert('Необходимо согласиться с условиями');
+    return;
+  }
+
+  const payload = { email, password, role };
+  if (role === 'applicant') {
+    payload.full_name = name;
+    payload.university = document.querySelector('#applicantExtra input[placeholder*="Вуз"]').value;
+    payload.course = document.querySelector('#applicantExtra input[placeholder*="курс"]').value;
+  } else {
+    payload.company_name = name;
+    payload.inn = document.querySelector('#employerExtra input[placeholder*="ИНН"]').value;
+    payload.company_email = document.querySelector('#employerExtra input[type="email"]').value;
+    payload.company_link = document.querySelector('#employerExtra input[type="url"]').value;
+  }
+
+  try {
+    const res = await fetch('/api/v1/auth/register', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify(payload)
+    });
+    if (!res.ok) {
+      const err = await res.json();
+      throw new Error(err.error || 'Ошибка регистрации');
+    }
+    alert('Регистрация успешна! Теперь войдите.');
+    window.location.href = '/login';
+  } catch (err) {
+    alert(err.message);
+  }
+}
+</script>
+</body>
+</html>
